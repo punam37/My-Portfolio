@@ -4,6 +4,7 @@ import projImg1 from "../assets/img/project-img1.png";
 import projImg2 from "../assets/img/project-img2.png";
 import projImg3 from "../assets/img/project-img3.png";
 import projImg4 from "../assets/img/project-img4.png";
+import projImg6 from "../assets/img/project-img6.png";
 import colorSharp2 from "../assets/img/color-sharp2.png";
 import 'animate.css';
 import TrackVisibility from 'react-on-screen';
@@ -22,9 +23,9 @@ export const Projects = () => {
       imgUrl: projImg2,
     },
     {
-      title: "Excel ",
+      title: "Tableau ",
       description: "analyzing, and visualizing data",
-      imgUrl: projImg3,
+      imgUrl: projImg6,
     },
     {
       title: "Business Startup",
@@ -37,7 +38,7 @@ export const Projects = () => {
       imgUrl: projImg4,
     },
     {
-      title: "Business Startup",
+      title: "Excel",
       description: "analyzing, and visualizing data",
       imgUrl: projImg3,
     },
