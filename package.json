@@ -31,11 +31,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "nodemon src/server.js",
-    "serve": "serve -s build"
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
