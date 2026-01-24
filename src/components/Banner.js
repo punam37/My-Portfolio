@@ -16,12 +16,9 @@ export const Banner = () => {
   const period = 2000;
 
   useEffect(() => {
-    const ticker = setInterval(() => {
-      tick();
-    }, delta);
-
-    return () => clearInterval(ticker);
-  }, [text]);
+  const ticker = setInterval(tick, delta);
+  return () => clearInterval(ticker);
+}, [text, delta]);
 
   const tick = () => {
     const i = loopNum % toRotate.length;
@@ -41,7 +38,7 @@ export const Banner = () => {
       setDelta(period);
     } else if (isDeleting && updatedText === "") {
       setIsDeleting(false);
-      setLoopNum(loopNum + 1);
+      setLoopNum((prev) => prev + 1);
       setDelta(500);
     } else {
       setDelta(300 - Math.random() * 100);
