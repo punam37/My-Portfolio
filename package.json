@@ -30,11 +30,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "nodemon src/server.js"
+  "start": "react-scripts start",
+  "server": "nodemon src/server.js",
+  "dev": "concurrently \"npm run start\" \"npm run server\"",
+  "build": "concurrently \"npm run start\" \"npm run server\" build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -53,5 +54,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
