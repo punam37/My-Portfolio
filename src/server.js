@@ -8,15 +8,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Test route
-app.get("/api", (req, res) => {
-  res.send("Backend is running on Vercel!");
+// Simple test route
+app.get("/", (req, res) => {
+  res.send("Backend is running!");
 });
 
-// ⚠️ DO NOT exit process on Vercel
+// Verify environment variables
 if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-  console.error("ERROR: EMAIL_USER or EMAIL_PASS not set");
+  console.error("ERROR: EMAIL_USER or EMAIL_PASS not set in .env");
+  process.exit(1);
 }
+
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS.replace(/./g, "*")); // hide password
 
 // Nodemailer setup
 const contactEmail = nodemailer.createTransport({
@@ -27,8 +31,8 @@ const contactEmail = nodemailer.createTransport({
   },
 });
 
-// Verify transporter (safe for Vercel)
-contactEmail.verify((error) => {
+// Verify transporter
+contactEmail.verify((error, success) => {
   if (error) {
     console.error("Nodemailer error:", error);
   } else {
@@ -36,21 +40,21 @@ contactEmail.verify((error) => {
   }
 });
 
-// POST /api/contact
-app.post("/api/contact", async (req, res) => {
-  const { firstName, lastName, email, phone, message } = req.body;
+// POST /contact route
+app.post("/contact", (req, res) => {
+  // console.log("POST /contact received:", req.body);
 
+  const { firstName, lastName, email, phone, message } = req.body;
   if (!firstName || !lastName || !email || !message) {
-    return res.status(400).json({
-      code: 400,
-      status: "Missing required fields",
-    });
+    return res.status(400).json({ code: 400, status: "Missing required fields" });
   }
 
   const fullName = `${firstName} ${lastName}`;
 
+  console.log(fullName)
+
   const mail = {
-    from: `"${fullName}" <${email}>`,
+    from: fullName,
     to: process.env.EMAIL_USER,
     subject: "Contact Form Submission - Portfolio",
     html: `
@@ -61,21 +65,18 @@ app.post("/api/contact", async (req, res) => {
     `,
   };
 
-  try {
-    await contactEmail.sendMail(mail);
-    return res.status(200).json({ code: 200, status: "Message Sent" });
-  } catch (error) {
-    console.error("Error sending email:", error);
-    return res.status(500).json({
-      code: 500,
-      status: "Error sending message",
-    });
-  }
+
+  contactEmail.sendMail(mail, (error, info) => {
+    if (error) {
+      console.error("Error sending email:", error);
+      return res.status(500).json({ code: 500, status: "Error sending message", error });
+    } else {
+      console.log("Email sent successfully:", info.response);
+      return res.status(200).json({ code: 200, status: "Message Sent" });
+    }
+  });
 });
 
-/**
- * ✅ IMPORTANT
- * - No app.listen()
- * - Export app for Vercel
- */
-module.exports = app;
+// Start server
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
